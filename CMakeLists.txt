@@ -4,10 +4,14 @@ project(LabOS)
 
 enable_testing()
 
+add_executable(LabOS, lab2/main.cpp)
+
 if (MSVC)
     add_compile_options(/W4 /WX)
 else()
     add_compile_options(-Wall -Wextra -pedantic -Werror)
 endif()
+
+add_subdirectory(lab2)
 
 add_subdirectory(tests)
