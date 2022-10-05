@@ -48,6 +48,11 @@ int parentProcess(FILE* standartInput) {
             return -1;
         }
 
+        if (dup2(firstPipe, 1) == -1) {
+            // Dup2 error
+            return -1;
+        }
+
         char* str = nullptr;
         size_t k = 0;
 

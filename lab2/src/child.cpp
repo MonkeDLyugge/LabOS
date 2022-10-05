@@ -30,8 +30,13 @@ int main(int argc, char** argv) {
         return -1;
     }
 
+    if (dup2(firstPipe, 0) == -1 || dup2(fd, 1) == -1) {
+        // Dup2 error
+        return -1;
+    }
+
     float* array = {};
-    size_t n = 0;
+    size_t n = sizeof(float [3]);
     int s = read(firstPipe, array, n);
     
     float ans = 0;
@@ -44,6 +49,10 @@ int main(int argc, char** argv) {
             // Writing sum to file from child error
             return -1;
         }
+        free(array);
+        free(ansStr);
+        array = {};
+        ansStr = {};
         s = read(firstPipe, array, n);
     } 
     close(firstPipe);
