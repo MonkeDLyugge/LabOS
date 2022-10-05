@@ -48,11 +48,6 @@ int parentProcess(FILE* standartInput) {
             return -1;
         }
 
-        if (dup2(firstPipe, 1) == -1) {
-            // Dup2 error
-            return -1;
-        }
-
         char* str = nullptr;
         size_t k = 0;
 
@@ -68,7 +63,6 @@ int parentProcess(FILE* standartInput) {
         }
 
         // Closing/deleting pipes
-        wait(nullptr);
         close(firstPipe);
         close(secondPipe);
         unlink("firstPipe");
@@ -76,7 +70,7 @@ int parentProcess(FILE* standartInput) {
     } else {
         // Deleting \n from file name
         fileName[charactersCount - 1] = '\0';
-
+        
         char* argv[3];
         sprintf(argv[0], "%s", "child.cpp");
         argv[1] = fileName;

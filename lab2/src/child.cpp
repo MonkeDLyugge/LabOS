@@ -4,15 +4,12 @@
 #include "sys/stat.h"
 #include "fcntl.h"
 
+#include <iostream>
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>                    
 
-float sum(float* array) {
-    return array[0] + array[1] + array[2];
-}
-
-int main(int argc, char** argv) {    
+int main(int argc, char* argv[]) {    
     int firstPipe = open("firstPipe", O_RDONLY);
     int secondPipe = open("secondPipe", O_WRONLY);
     if (argc < 2) {
@@ -35,26 +32,16 @@ int main(int argc, char** argv) {
         return -1;
     }
 
-    float* array = {};
-    size_t n = sizeof(float [3]);
-    int s = read(firstPipe, array, n);
-    
     float ans = 0;
-    char* ansStr = {};
+    
+    float num;
 
-    while (s > 0) {
-        ans = sum(array);
-        sprintf(ansStr, "%f\n", ans);
-        if (write(fd, ansStr, sizeof(float)) == -1) {
-            // Writing sum to file from child error
-            return -1;
-        }
-        free(array);
-        free(ansStr);
-        array = {};
-        ansStr = {};
-        s = read(firstPipe, array, n);
-    } 
+    while (std::cin >> num) {      
+        ans += num;
+    }
+
+    printf("%f", ans);
+
     close(firstPipe);
     close(secondPipe);
     close(fd);
