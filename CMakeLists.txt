@@ -1,10 +1,8 @@
-cmake_minimum_required(VERSION 3.21)
+cmake_minimum_required(VERSION 3.16)
 
 project(LabOS)
 
 enable_testing()
-
-add_executable(LabOS, lab2/main.cpp)
 
 if (MSVC)
     add_compile_options(/W4 /WX)
