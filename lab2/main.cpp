@@ -4,5 +4,6 @@
 #include <stdlib.h>
 
 int main() {
-    exit(parentProcess(stdin));
+    parentProcess(stdin);
+    return 0;
 }

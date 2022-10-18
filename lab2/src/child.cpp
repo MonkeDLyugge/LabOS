@@ -10,14 +10,13 @@
 #include <string.h>                    
 
 int main(int argc, char* argv[]) {    
-    int firstPipe = open("firstPipe", O_RDONLY);
-    int secondPipe = open("secondPipe", O_WRONLY);
+    int pipe = open("pipe", O_RDONLY);
     if (argc < 2) {
         // Missing some arguments
         return -1;
     }
-    if (firstPipe == -1 || secondPipe == -1) {
-        // Opening pipes error
+    if (pipe == -1) {
+        // Opening pipe error
         return -1;
     }
     unlink(argv[1]);
@@ -27,7 +26,7 @@ int main(int argc, char* argv[]) {
         return -1;
     }
 
-    if (dup2(firstPipe, 0) == -1 || dup2(fd, 1) == -1) {
+    if (dup2(pipe, 0) == -1 || dup2(fd, 1) == -1) {
         // Dup2 error
         return -1;
     }
@@ -40,10 +39,8 @@ int main(int argc, char* argv[]) {
         ans += num;
     }
 
-    printf("%f", ans);
+    printf("%.3f", ans);
 
-    close(firstPipe);
-    close(secondPipe);
+    close(pipe);
     close(fd);
-    return 0;
 }

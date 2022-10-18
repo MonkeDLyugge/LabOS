@@ -1,3 +1,5 @@
+cmake_minimum_required(VERSION 3.16)
+
 include(FetchContent)
 
 FetchContent_Declare(
@@ -10,5 +12,17 @@ FetchContent_MakeAvailable(googletest)
 add_library(GTest::GTest INTERFACE IMPORTED)
 target_link_libraries(GTest::GTest INTERFACE gtest_main)
 
+project(tests)
 
 set(CMAKE_CXX_STANDARD 17)
+
+# LAB 2 tests
+add_executable(lab2_test 
+        lab2_test.cpp
+        ../lab2/src/parent.cpp
+        ../lab2/include/parent.hpp)
+
+target_link_libraries(lab2_test PRIVATE GTest::GTest)
+target_include_directories(lab2_test PRIVATE ../lab2/include)
+
+add_test(lab2_test lab2_test)

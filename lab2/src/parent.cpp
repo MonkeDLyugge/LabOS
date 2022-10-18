@@ -13,13 +13,12 @@
 int parentProcess(FILE* standartInput) {
     // The entry point to the parent process
 
-    // If last execution complited with no closing/deleting pipes
-    unlink("firstPipe");
-    unlink("secondPipe");
+    // If last execution complited with no closing/deleting pipe
+    unlink("pipe");
 
     // Creating new pipes
-    if (mkfifo("firstPipe", S_IREAD | S_IWRITE) == -1 || mkfifo("secondPipe", S_IREAD | S_IWRITE) == -1) {
-        // Creating pipes error
+    if (mkfifo("pipe", S_IREAD | S_IWRITE) == -1) {
+        // Creating pipe error
         return -1;
     }
     
@@ -40,11 +39,10 @@ int parentProcess(FILE* standartInput) {
         return -1;
     }
     if (pid != 0) {
-        // Opening pipes
-        int firstPipe = open("firstPipe", O_WRONLY);
-        int secondPipe = open("secondPipe", O_RDONLY);
-        if (firstPipe == -1 || secondPipe == -1) {
-            // Opening pipes error
+        // Opening pipe
+        int pipe = open("pipe", O_CREAT | O_WRONLY);
+        if (pipe == -1) {
+            // Opening pipe error
             return -1;
         }
 
@@ -53,7 +51,7 @@ int parentProcess(FILE* standartInput) {
 
         charactersCount = getline(&str, &k, standartInput);
         while (charactersCount > 0) {
-            if (write(firstPipe, str, charactersCount) == -1) {
+            if (write(pipe, str, charactersCount) == -1) {
                 // Sending data from parent process error
                 return -1;
             }
@@ -62,11 +60,9 @@ int parentProcess(FILE* standartInput) {
             charactersCount = getline(&str, &k, standartInput);
         }
 
-        // Closing/deleting pipes
-        close(firstPipe);
-        close(secondPipe);
-        unlink("firstPipe");
-        unlink("secondPipe");
+        // Closing/deleting pipe
+        close(pipe);
+        unlink("pipe");
     } else {
         // Deleting \n from file name
         fileName[charactersCount - 1] = '\0';
