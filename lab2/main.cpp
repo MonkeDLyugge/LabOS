@@ -1,9 +1,9 @@
-#include "include/parent.hpp"
+#include "parent.hpp"
 
 #include <stdio.h>
 #include <stdlib.h>
 
 int main() {
-    parentProcess(stdin);
+    ParentProcess(stdin);
     return 0;
 }

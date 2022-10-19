@@ -6,6 +6,6 @@
 #include <stdio.h>
 #include <iostream>
 
-int parentProcess(FILE* standartInput);
+int ParentProcess(FILE* standartInput);
 
 #endif

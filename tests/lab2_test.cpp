@@ -4,11 +4,12 @@
 #include <filesystem>
 #include <fstream>
 #include <memory>
-#include "../lab2/include/parent.hpp"
+
+#include <parent.hpp>
 
 namespace fs = std::filesystem;
 
-void RunTest(const std::vector<const char*>& input, const std::vector<const char*>& expectedOutput) {
+void RunTest(const std::vector<std::string>& input, const std::vector<std::string>& expectedOutput) {
     const char* fileWithInput = "input.txt";
     const char* fileWithOutput = "out.txt";
     {
@@ -27,16 +28,16 @@ void RunTest(const std::vector<const char*>& input, const std::vector<const char
 
     std::unique_ptr<FILE, decltype(deleter)> inFile(fopen(fileWithInput, "r"), deleter);
 
-    parentProcess(inFile.get());
+    ParentProcess(inFile.get());
 
 
     auto outFile = std::ifstream(fileWithOutput);
 
     ASSERT_TRUE(outFile.good());
     
-    char* result;
+    std::string result;
 
-    for(auto el : expectedOutput) {
+    for(auto el: expectedOutput) {
         outFile >> result;
         EXPECT_EQ(result, el);
     }
@@ -54,13 +55,13 @@ void RunTest(const std::vector<const char*>& input, const std::vector<const char
 
 TEST(SecondLabTests, PositiveSum) {
 
-    std::vector<const char*> input = {
+    std::vector<std::string> input = {
             "1 2 3",
             "0.5 0.7",
             "0.2"
     };
 
-    std::vector<const char*> expectedOutput = {
+    std::vector<std::string> expectedOutput = {
             "7.400"
     };
 
@@ -70,13 +71,13 @@ TEST(SecondLabTests, PositiveSum) {
 
 TEST(SecondLabTests, NegativeSum) {
 
-    std::vector<const char*> input = {
+    std::vector<std::string> input = {
             "-1 -2 -3",
             "-0.5 -0.7",
             "-0.2"
     };
 
-    std::vector<const char*> expectedOutput = {
+    std::vector<std::string> expectedOutput = {
             "-7.400"
     };
 
@@ -86,13 +87,13 @@ TEST(SecondLabTests, NegativeSum) {
 
 TEST(SecondLabTests, BigSum) {
 
-    std::vector<const char*> input = {
+    std::vector<std::string> input = {
             "1122.421 2.2 3123412.421",
             "1234124.412 12341.412",
             "11234.412 12341234.213"
     };
 
-    std::vector<const char*> expectedOutput = {
+    std::vector<std::string> expectedOutput = {
             "16723471.491"
     };
 

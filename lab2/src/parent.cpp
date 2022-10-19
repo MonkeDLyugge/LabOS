@@ -7,10 +7,9 @@
 #include "sys/stat.h"
 #include "sys/wait.h"
 #include "fcntl.h"
+#include "parent.hpp"
 
-#include "../include/parent.hpp"
-
-int parentProcess(FILE* standartInput) {
+int ParentProcess(FILE* standartInput) {
     // The entry point to the parent process
 
     // If last execution complited with no closing/deleting pipe
@@ -40,7 +39,7 @@ int parentProcess(FILE* standartInput) {
     }
     if (pid != 0) {
         // Opening pipe
-        int pipe = open("pipe", O_CREAT | O_WRONLY);
+        int pipe = open("pipe", O_WRONLY);
         if (pipe == -1) {
             // Opening pipe error
             return -1;
