@@ -1,4 +1,4 @@
-cmake_minimum_required(VERSION 3.21)
+cmake_minimum_required(VERSION 3.24.1)
 
 project(LabOS)
 
@@ -9,5 +9,7 @@ if (MSVC)
 else()
     add_compile_options(-Wall -Wextra -pedantic -Werror)
 endif()
+
+add_subdirectory(lab2)
 
 add_subdirectory(tests)
