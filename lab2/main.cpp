@@ -4,6 +4,6 @@
 #include <stdlib.h>
 
 int main() {
-    ParentProcess(stdin);
+    ParentProcess(stdin, "child.out");
     return 0;
 }

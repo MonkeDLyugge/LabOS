@@ -10,15 +10,15 @@
 #include <string.h>                    
 
 int main(int argc, char* argv[]) {    
-    int pipe = open("pipe", O_RDONLY);
+    //int pipe = open("pipe", O_RDONLY);
     if (argc < 2) {
         // Missing some arguments
         return -1;
     }
-    if (pipe == -1) {
+    /*(if (pipe == -1) {
         // Opening pipe error
         return -1;
-    }
+    }*/
     unlink(argv[1]);
     int fd = open(argv[1], O_CREAT | O_WRONLY, S_IREAD | S_IWRITE); 
     if (fd == -1) {
@@ -26,7 +26,7 @@ int main(int argc, char* argv[]) {
         return -1;
     }
 
-    if (dup2(pipe, 0) == -1 || dup2(fd, 1) == -1) {
+    if (dup2(fd, 1) == -1) {
         // Dup2 error
         return -1;
     }
@@ -41,7 +41,7 @@ int main(int argc, char* argv[]) {
 
     printf("%.3f", ans);
 
-    close(pipe);
+    // close(pipe);
     close(fd);
     return 0;
 }

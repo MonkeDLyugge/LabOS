@@ -7,9 +7,10 @@
 #include "sys/stat.h"
 #include "sys/wait.h"
 #include "fcntl.h"
+
 #include "parent.hpp"
 
-int ParentProcess(FILE* standartInput) {
+int ParentProcess(FILE* standartInput, const std::string& path) {
     // The entry point to the parent process
 
     // If last execution complited with no closing/deleting pipe
@@ -18,6 +19,7 @@ int ParentProcess(FILE* standartInput) {
     // Creating new pipes
     if (mkfifo("pipe", S_IREAD | S_IWRITE) == -1) {
         // Creating pipe error
+        perror("file didnt create");
         return -1;
     }
     
@@ -32,7 +34,7 @@ int ParentProcess(FILE* standartInput) {
         return -1;
     }
 
-    pid_t pid = fork();
+    int pid = fork();
     if (pid == -1) {
         // Fork error
         return -1;
@@ -40,6 +42,7 @@ int ParentProcess(FILE* standartInput) {
     if (pid != 0) {
         // Opening pipe
         int pipe = open("pipe", O_WRONLY);
+
         if (pipe == -1) {
             // Opening pipe error
             return -1;
@@ -55,23 +58,27 @@ int ParentProcess(FILE* standartInput) {
                 return -1;
             }
             free(str);
-            k = 0;
+            str = nullptr;
             charactersCount = getline(&str, &k, standartInput);
         }
 
         // Closing/deleting pipe
         close(pipe);
-        unlink("pipe");
+        wait(NULL);
     } else {
         // Deleting \n from file name
         fileName[charactersCount - 1] = '\0';
         
+        int pipe = open("pipe", O_RDONLY);
+
+        dup2(pipe, 0);
+
         char* argv[3];
         sprintf(argv[0], "%s", "child.cpp");
         argv[1] = fileName;
-        argv[2] = nullptr;
+        argv[2] = NULL;
 
-        return execv("child", argv);
+        return execv(path.c_str(), argv);
     }
     return 0;
 }

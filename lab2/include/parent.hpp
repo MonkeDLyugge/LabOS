@@ -1,11 +1,11 @@
 // Parent header file
 
-#ifndef PARENT_H
-#define PARENT_H
+#ifndef PARENT_HPP
+#define PARENT_HPP
 
 #include <stdio.h>
 #include <iostream>
 
-int ParentProcess(FILE* standartInput);
+int ParentProcess(FILE* standartInput, const std::string& path);
 
 #endif

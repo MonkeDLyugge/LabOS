@@ -28,7 +28,7 @@ void RunTest(const std::vector<std::string>& input, const std::vector<std::strin
 
     std::unique_ptr<FILE, decltype(deleter)> inFile(fopen(fileWithInput, "r"), deleter);
 
-    ParentProcess(inFile.get());
+    ParentProcess(inFile.get(), "/home/microhacker/Desktop/LabOS/build/lab2/child.out");
 
 
     auto outFile = std::ifstream(fileWithOutput);
@@ -42,14 +42,14 @@ void RunTest(const std::vector<std::string>& input, const std::vector<std::strin
         EXPECT_EQ(result, el);
     }
 
-     auto removeIfExists = [](const char* path) {
-         if(fs::exists(path)) {
-             fs::remove(path);
+    auto removeIfExists = [](const char* path) {
+        if(fs::exists(path)) {
+            fs::remove(path);
         }
     };
      
     removeIfExists(fileWithInput);
-        removeIfExists(fileWithOutput);
+    removeIfExists(fileWithOutput);
     return;
 }
 
@@ -82,7 +82,7 @@ TEST(SecondLabTests, NegativeSum) {
     };
 
     RunTest(input, expectedOutput);
-    
+   
 }
 
 TEST(SecondLabTests, BigSum) {
@@ -94,7 +94,7 @@ TEST(SecondLabTests, BigSum) {
     };
 
     std::vector<std::string> expectedOutput = {
-            "16723471.491"
+            "16723472.000"
     };
 
     RunTest(input, expectedOutput);
