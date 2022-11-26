@@ -3,20 +3,20 @@
 
 #include <string>
 #include <vector>
+#include <iostream>
 
-using namespace std;
-
-struct card {
-    string name; // = {2, 3, 4, ..., J, Q, K, T};
+struct TCard {
+    std::string name; // = {2, 3, 4, ..., J, Q, K, T};
     char suit; // = {D, H, C, S}
 };
 
-extern card deck[52];
+const int CARDS = 52;
+const int CARD_NAMES = 13;
 
-extern vector<bool>experiment_result;
+std::vector<TCard> NewDeck();
 
-void ThreadExperiment(int thread_count, int current_experiment);
+void* ThreadExperiment(void* argv);
 
-void NewDeck();
+int Chances(int numberOfThreads);
 
 #endif

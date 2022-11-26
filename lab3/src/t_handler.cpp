@@ -1,47 +1,76 @@
-#include <thread>
-
 #include "t_handler.hpp"
+#include <pthread.h>
 
-using namespace std;
+struct TData {
+    std::vector<TCard>deck;
+    int success;
+    int thread;
 
-card deck[52];
-vector<bool>experiment_result;
+    TData(std::vector<TCard>d, int s, int t) : deck(d), success(s), thread(t) {} 
+};
 
-void ThreadExperiment(int thread_count, int current_experiment) {
-    if (current_experiment == 0) {
-        return;
-    }
-
-    thread new_thread(ThreadExperiment, thread_count + 1, current_experiment - 1);
-
-    int first_card = rand() % 53;
-    int second_card = rand() % 53;
-    while (first_card == second_card) {
-        second_card = rand() % 53;
-    }
-
-    experiment_result.push_back(deck[first_card].name == deck[second_card].name); 
-    new_thread.join();
-}
-
-void NewDeck() {
-    string names[13] = {"2", "3", "4", "5", "6", "7", "8", "9", "10",
+std::vector<TCard> NewDeck() {
+    std::string names[CARD_NAMES] = {"2", "3", "4", "5", "6", "7", "8", "9", "10",
                         "J", "Q", "K", "T"};
     int k = 0;
-    card new_card;
-    for (int i = 0; i < 13; i++) {
-        new_card.name = names[i];
-        new_card.suit = 'D';
-        deck[k] = new_card;
+    TCard newCard;
+    std::vector<TCard>deck(CARDS);
+    for (int i = 0; i < CARD_NAMES; i++) {
+        newCard.name = names[i];
+        newCard.suit = 'D';
+        deck[k] = newCard;
         k++;
-        new_card.suit = 'C';
-        deck[k] = new_card;
+        newCard.suit = 'C';
+        deck[k] = newCard;
         k++;
-        new_card.suit = 'H';
-        deck[k] = new_card;
+        newCard.suit = 'H';
+        deck[k] = newCard;
         k++;
-        new_card.suit = 'S';
-        deck[k] = new_card;
+        newCard.suit = 'S';
+        deck[k] = newCard;
         k++;
     }
+    return deck;
+}
+
+void* ThreadExperiment(void* argv) {
+    std::vector<TCard>deck = ((TData *) argv)->deck;
+    int &thread = ((TData *) argv)->thread;
+    int &success = ((TData *) argv)->success;
+    
+    srand(time(nullptr) * thread);
+
+    int firstCard = rand() % CARDS;
+    srand(time(nullptr) * thread * 2);
+    int secondCard = rand() % CARDS;
+    while (firstCard == secondCard) {
+        secondCard = rand() % CARDS;
+    }
+
+    success += (deck[firstCard].name == deck[secondCard].name);
+
+    return nullptr;
+}
+
+int Chances(int numberOfThreads) {
+
+    std::vector<pthread_t>threads(numberOfThreads);
+
+    TData data(NewDeck(), 0, numberOfThreads);
+
+    for (int i = 0; i < numberOfThreads; i++) {
+        if (pthread_create(&threads[i], nullptr, ThreadExperiment, &data)) {
+            perror("Thread create error");
+            exit(EXIT_FAILURE);
+        }
+    }
+
+    for(int i = 0; i < numberOfThreads; i++) {
+        if (pthread_join(threads[i], nullptr) != 0) {
+            perror("Can't wait for thread\n");
+            exit(EXIT_FAILURE);
+        }
+    }
+     
+    return data.success;
 }
