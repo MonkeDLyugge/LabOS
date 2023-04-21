@@ -2,19 +2,19 @@
 #include <pthread.h>
 
 struct TData {
-    std::vector<TCard>deck;
+    std::vector<TCard>& deck;
     int success;
     int thread;
 
-    TData(std::vector<TCard>d, int s, int t) : deck(d), success(s), thread(t) {} 
+    TData(std::vector<TCard>& d, int s, int t) : deck(d), success(s), thread(t) {} 
 };
 
 std::vector<TCard> NewDeck() {
-    std::string names[CARD_NAMES] = {"2", "3", "4", "5", "6", "7", "8", "9", "10",
+    const std::string names[CARD_NAMES] = {"2", "3", "4", "5", "6", "7", "8", "9", "10",
                         "J", "Q", "K", "T"};
     int k = 0;
     TCard newCard;
-    std::vector<TCard>deck(CARDS);
+    std::vector<TCard> deck(CARDS);
     for (int i = 0; i < CARD_NAMES; i++) {
         newCard.name = names[i];
         newCard.suit = 'D';
@@ -55,8 +55,10 @@ void* ThreadExperiment(void* argv) {
 int Chances(int numberOfThreads) {
 
     std::vector<pthread_t>threads(numberOfThreads);
+    
+    std::vector<TCard> deck = NewDeck();
 
-    TData data(NewDeck(), 0, numberOfThreads);
+    TData data(deck, 0, numberOfThreads);
 
     for (int i = 0; i < numberOfThreads; i++) {
         if (pthread_create(&threads[i], nullptr, ThreadExperiment, &data)) {
@@ -71,6 +73,6 @@ int Chances(int numberOfThreads) {
             exit(EXIT_FAILURE);
         }
     }
-     
+    
     return data.success;
 }
